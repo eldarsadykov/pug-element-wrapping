@@ -49,7 +49,18 @@ function activate(context) {
 				editBuilder.replace(selection, replacementText);
 			}
 
-			editor.edit(replaceSelection);
+			function replaceLine(editBuilder) {
+				const lineSelection = new vscode.Selection(line.range.start, selection.end);
+				
+				const replacementText = "";
+				editBuilder.replace(lineSelection, replacementText);
+			}
+
+			if (lineElement === "|") {
+				editor.edit(replaceSelection);
+			} else {
+				editor.edit(replaceLine);
+			}
 		}
 	});
 
