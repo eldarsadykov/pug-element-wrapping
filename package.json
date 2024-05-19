@@ -13,8 +13,8 @@
   "main": "./extension.js",
   "contributes": {
     "commands": [{
-      "command": "pug-element-wrapping.helloWorld",
-      "title": "Hello World"
+      "command": "pug-element-wrapping.wrapInPugElement",
+      "title": "Wrap in Pug element"
     }]
   },
   "scripts": {
