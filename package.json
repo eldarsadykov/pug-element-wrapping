@@ -1,42 +1,53 @@
 {
-  "name": "pug-element-wrapping",
-  "displayName": "Pug Element Wrapping",
-  "publisher": "EldarSadykov",
-  "icon": "pugjs_logo_icon_170825.png",
-  "description": "",
-  "version": "0.0.3",
-  "engines": {
-    "vscode": "^1.89.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "github.com/eldarsadykov/pug-element-wrapping.git"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [],
-  "main": "./extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "pug-element-wrapping.wrapInPugElement",
-        "title": "Wrap in Pug element"
-      }
-    ]
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "pretest": "npm run lint",
-    "test": "vscode-test"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.89.0",
-    "@types/mocha": "^10.0.6",
-    "@types/node": "18.x",
-    "eslint": "^8.57.0",
-    "typescript": "^5.4.5",
-    "@vscode/test-cli": "^0.0.9",
-    "@vscode/test-electron": "^2.3.9"
-  }
+	"name": "pug-element-wrapping",
+	"displayName": "Pug Element Wrapping",
+	"publisher": "EldarSadykov",
+	"icon": "pugjs_logo_icon_170825.png",
+	"description": "",
+	"version": "0.0.3",
+	"engines": {
+		"vscode": "^1.89.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "github.com/eldarsadykov/pug-element-wrapping.git"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [],
+	"main": "./extension.js",
+	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "Pug Element Wrapping Configuration",
+			"properties": {
+				"pug-element-wrapping.defaultElement": {
+					"type": "string",
+					"default": "em",
+					"description": "Defualt element for wrapping"
+				}
+			}
+		},
+		"commands": [
+			{
+				"command": "pug-element-wrapping.wrapInPugElement",
+				"title": "Wrap In Pug Element"
+			}
+		]
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"pretest": "npm run lint",
+		"test": "vscode-test"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.89.0",
+		"@types/mocha": "^10.0.6",
+		"@types/node": "18.x",
+		"eslint": "^8.57.0",
+		"typescript": "^5.4.5",
+		"@vscode/test-cli": "^0.0.9",
+		"@vscode/test-electron": "^2.3.9"
+	}
 }

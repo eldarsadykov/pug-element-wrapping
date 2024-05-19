@@ -10,6 +10,10 @@ const vscode = require("vscode");
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
+	// Accessing settings
+	const config = vscode.workspace.getConfiguration("pug-element-wrapping");
+	const defaultElement = config.get("defaultElement");
+
 	let disposable = vscode.commands.registerCommand("pug-element-wrapping.wrapInPugElement", async function () {
 		const editor = vscode.window.activeTextEditor;
 		if (editor) {
@@ -34,7 +38,7 @@ function activate(context) {
 
 			const elementToWrapIn = await vscode.window.showInputBox({
 				prompt: "Enter the element",
-				value: `em`,
+				value: defaultElement,
 			});
 
 			if (!elementToWrapIn) return;
