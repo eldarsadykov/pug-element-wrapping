@@ -27,21 +27,27 @@ function activate(context) {
 			const lineIndentation = indentChar.repeat(indentationLevel * charsPerLevel);
 			const lineElement = getLineElement(lineText);
 
-			console.log(lineElement);
+			console.log("Line element: " + lineElement);
 
 			const elementToWrapIn = await vscode.window.showInputBox({
 				prompt: "Enter the element",
 				value: `em`,
 			});
 
-			if (elementToWrapIn !== undefined) {
-				const prefix = "\n" + lineIndentation + elementToWrapIn + " ";
-				const postfix = "\n" + lineIndentation + "| ";
-				const replacementText = prefix + selectedText + postfix;
-				editor.edit((editBuilder) => {
-					editBuilder.replace(selection, replacementText);
-				});
+			if (elementToWrapIn === undefined) {
+				console.log("Input was canceled");
+				return;
+			} else if (elementToWrapIn.length === 0) {
+				console.log("Input was empty");
+				return;
 			}
+
+			const prefix = "\n" + lineIndentation + elementToWrapIn + " ";
+			const postfix = "\n" + lineIndentation + "| ";
+			const replacementText = prefix + selectedText + postfix;
+			editor.edit((editBuilder) => {
+				editBuilder.replace(selection, replacementText);
+			});
 		}
 	});
 
