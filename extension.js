@@ -46,14 +46,19 @@ function activate(context) {
 				const prefix = "\n" + lineIndentation + elementToWrapIn + " ";
 				const postfix = "\n" + lineIndentation + "| ";
 				const replacementText = prefix + selectedText + postfix;
+
 				editBuilder.replace(selection, replacementText);
 			}
 
 			function replaceLine(editBuilder) {
-				const lineSelection = new vscode.Selection(line.range.start, selection.end);
-				
-				const replacementText = "";
-				editBuilder.replace(lineSelection, replacementText);
+				const start = new vscode.Position(lineNumber, 4);
+				const end = new vscode.Position(lineNumber, 8);
+				const newSelection = new vscode.Selection(start, end);
+				const text = editor.document.getText(newSelection);
+				console.log(text);
+				// lineIndentation + lineElement + "\n" + shiftedIndentation + "| "
+				// const replacementText = "";
+				// editBuilder.replace(lineSelection, replacementText);
 			}
 
 			if (lineElement === "|") {
