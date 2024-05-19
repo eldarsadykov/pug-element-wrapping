@@ -6,3 +6,4 @@ Enables wrapping selected text in Pug elements with proper indentation.
 
 - Wrap text in Pug elements by running "Wrap in Pug Element" command from Command Pallette.
 - Detects current indentation rules for your active editor.
+- Creates pipe symbols for parent elements when necessary to maintain correct HTML wrapping.

@@ -4,7 +4,7 @@
   "publisher": "EldarSadykov",
   "icon": "pugjs_logo_icon_170825.png",
   "description": "",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.89.0"
   },
