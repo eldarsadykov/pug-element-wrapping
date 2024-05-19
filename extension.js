@@ -25,6 +25,9 @@ function activate(context) {
 			const charsPerLevel = insertSpaces ? tabSize : 1;
 			const indentationLevel = leadingCharsCount / charsPerLevel;
 			const lineIndentation = indentChar.repeat(indentationLevel * charsPerLevel);
+			const lineElement = getLineElement(lineText);
+
+			console.log(lineElement);
 
 			const elementToWrapIn = await vscode.window.showInputBox({
 				prompt: "Enter the element",
@@ -54,10 +57,10 @@ module.exports = {
 };
 
 // Function to count leading characters in a string
-function countLeadingChars(line, char) {
+function countLeadingChars(lineText, indentChar) {
 	let count = 0;
-	for (let i = 0; i < line.length; i++) {
-		if (line[i] === char) {
+	for (let i = 0; i < lineText.length; i++) {
+		if (lineText[i] === indentChar) {
 			count++;
 		} else {
 			break;
@@ -67,14 +70,21 @@ function countLeadingChars(line, char) {
 }
 
 // Function to get the first word from a string
-function getFirstWord(line) {
-	let firstWord = "";
-	for (let i = 0; i < line.length; i++) {
-		if (line[i] === " " || line[i] === "\t") {
-			if (firstWord.length > 0) break;
+function getLineElement(lineText) {
+	let lineElement = "";
+	let insideParentheses = false;
+	for (let i = 0; i < lineText.length; i++) {
+		if (lineText[i] === "(") insideParentheses = true;
+		if (lineText[i] === ")") insideParentheses = false;
+
+		const isWhiteSpace = lineText[i] === " " || lineText[i] === "\t";
+		const elementStarted = lineElement.length > 0;
+
+		if (isWhiteSpace && !insideParentheses) {
+			if (elementStarted) break;
 		} else {
-			firstWord += line[i];
+			lineElement += lineText[i];
 		}
 	}
-	return firstWord;
+	return lineElement;
 }
