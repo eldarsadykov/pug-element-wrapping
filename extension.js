@@ -26,11 +26,11 @@ function activate(context) {
 			const insertSpaces = editor.options.insertSpaces;
 			const indentChar = insertSpaces ? " " : "\t";
 
-			const leadingChars = countLeadingChars(lineText, indentChar);
+			const leadingCharsCount = countLeadingChars(lineText, indentChar);
 			const charsPerLevel = insertSpaces ? tabSize : 1;
-			const indentationLevel = leadingChars / charsPerLevel;
+			const indentationLevel = leadingCharsCount / charsPerLevel;
 
-			console.log(`Line: ${leadingChars} ${insertSpaces ? "spaces" : "tabs"}, level: ${indentationLevel}`);
+			console.log(`Line: ${leadingCharsCount} ${insertSpaces ? "spaces" : "tabs"}, level: ${indentationLevel}`);
 			const nextLineIndentation = "\n" + indentChar.repeat(indentationLevel * charsPerLevel);
 			const prefix = nextLineIndentation;
 			const postfix = nextLineIndentation + "| ";
@@ -72,4 +72,17 @@ function countLeadingChars(line, char) {
 		}
 	}
 	return count;
+}
+
+// Function to get the first word from a string
+function getFirstWord(line) {
+	let firstWord = "";
+	for (let i = 0; i < line.length; i++) {
+		if (line[i] === " " || line[i] === "\t") {
+			if (firstWord.length > 0) break;
+		} else {
+			firstWord += line[i];
+		}
+	}
+	return firstWord;
 }
