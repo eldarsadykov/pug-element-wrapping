@@ -1,4 +1,4 @@
-# pug-element-wrapping README
+# Pug Element Wrapping Visual Studio Code Extension
 
 Enables wrapping selected text in Pug elements with proper indentation.
 
