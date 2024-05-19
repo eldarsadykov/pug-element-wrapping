@@ -31,9 +31,9 @@ function activate(context) {
 			const indentationLevel = leadingCharsCount / charsPerLevel;
 
 			console.log(`Line: ${leadingCharsCount} ${insertSpaces ? "spaces" : "tabs"}, level: ${indentationLevel}`);
-			const nextLineIndentation = "\n" + indentChar.repeat(indentationLevel * charsPerLevel);
-			const prefix = nextLineIndentation;
-			const postfix = nextLineIndentation + "| ";
+			const lineIndentation = indentChar.repeat(indentationLevel * charsPerLevel);
+			const prefix = "\n" + lineIndentation;
+			const postfix = "\n" + lineIndentation + "| ";
 
 			const elementToWrapIn = await vscode.window.showInputBox({
 				prompt: "Enter the element",
