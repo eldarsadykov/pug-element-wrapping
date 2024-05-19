@@ -24,9 +24,11 @@ function activate(context) {
 			const leadingCharsCount = countLeadingChars(lineText, indentChar);
 			const charsPerLevel = insertSpaces ? tabSize : 1;
 			const indentationLevel = leadingCharsCount / charsPerLevel;
-			const lineIndentation = indentChar.repeat(indentationLevel * charsPerLevel);
+			function calculateIndentation(indentationLevel) {
+				return indentChar.repeat(indentationLevel * charsPerLevel);
+			}
+			const lineIndentation = calculateIndentation(indentationLevel);
 			const lineElement = getLineElementInfo(lineText);
-
 			console.log("Line element: " + lineElement);
 
 			const elementToWrapIn = await vscode.window.showInputBox({
@@ -66,7 +68,7 @@ function activate(context) {
 			function replaceLine(editBuilder) {
 				const lineElementEndIndex = lineIndentation.length + lineElement.length;
 				const untilLineElementEnd = getTextFromIndices(0, lineElementEndIndex);
-				const shiftedIndentation = indentChar.repeat((indentationLevel + 1) * charsPerLevel);
+				const shiftedIndentation = calculateIndentation(indentationLevel + 1);
 				const fromLineElementEndToSelectionStart = getTextFromIndices(lineElementEndIndex, selection.start.character);
 				const fromSelectionEndToLineEnd = getTextFromIndices(selection.end.character, line.range.end.character);
 
