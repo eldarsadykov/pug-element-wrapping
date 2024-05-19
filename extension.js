@@ -42,12 +42,14 @@ function activate(context) {
 				return;
 			}
 
-			const prefix = "\n" + lineIndentation + elementToWrapIn + " ";
-			const postfix = "\n" + lineIndentation + "| ";
-			const replacementText = prefix + selectedText + postfix;
-			editor.edit((editBuilder) => {
+			function replaceSelection(editBuilder) {
+				const prefix = "\n" + lineIndentation + elementToWrapIn + " ";
+				const postfix = "\n" + lineIndentation + "| ";
+				const replacementText = prefix + selectedText + postfix;
 				editBuilder.replace(selection, replacementText);
-			});
+			}
+
+			editor.edit(replaceSelection);
 		}
 	});
 
