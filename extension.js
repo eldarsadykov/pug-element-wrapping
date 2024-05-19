@@ -28,21 +28,14 @@ function activate(context) {
 				return indentChar.repeat(indentationLevel * charsPerLevel);
 			}
 			const lineIndentation = calculateIndentation(indentationLevel);
-			const lineElement = getLineElementInfo(lineText);
-			console.log("Line element: " + lineElement);
+			const lineElement = getLineElement(lineText);
 
 			const elementToWrapIn = await vscode.window.showInputBox({
 				prompt: "Enter the element",
 				value: `em`,
 			});
 
-			if (elementToWrapIn === undefined) {
-				console.log("Input was canceled");
-				return;
-			} else if (elementToWrapIn.length === 0) {
-				console.log("Input was empty");
-				return;
-			}
+			if (!elementToWrapIn) return;
 
 			function replaceSelection(editBuilder) {
 				const prefix = "\n" + lineIndentation + elementToWrapIn + " ";
@@ -52,29 +45,16 @@ function activate(context) {
 				editBuilder.replace(selection, replacementText);
 			}
 
-			function getSelectionFromIndices(startIndex, endIndex) {
-				const start = new vscode.Position(lineNumber, startIndex);
-				const end = new vscode.Position(lineNumber, endIndex);
-				const newSelection = new vscode.Selection(start, end);
-				return newSelection;
-			}
-
-			function getTextFromIndices(startIndex, endIndex) {
-				const newSelection = getSelectionFromIndices(startIndex, endIndex);
-				const text = editor.document.getText(newSelection);
-				return text;
-			}
-
 			function replaceLine(editBuilder) {
 				const lineElementEndIndex = lineIndentation.length + lineElement.length;
-				const untilLineElementEnd = getTextFromIndices(0, lineElementEndIndex);
+				const untilLineElementEnd = lineText.slice(0, lineElementEndIndex);
 				const shiftedIndentation = calculateIndentation(indentationLevel + 1);
-				const fromLineElementEndToSelectionStart = getTextFromIndices(lineElementEndIndex, selection.start.character);
-				const fromSelectionEndToLineEnd = getTextFromIndices(selection.end.character, line.range.end.character);
+				const fromLineElementEndToSelectionStart = lineText.slice(lineElementEndIndex, selection.start.character);
+				const fromSelectionEndToLineEnd = lineText.slice(selection.end.character);
 
 				const replacementText = `${untilLineElementEnd}\n${shiftedIndentation}|${fromLineElementEndToSelectionStart}\n${shiftedIndentation}${elementToWrapIn} ${selectedText}\n${shiftedIndentation}| ${fromSelectionEndToLineEnd}`;
 
-				const lineSelection = getSelectionFromIndices(0, replacementText.length);
+				const lineSelection = new vscode.Selection(lineNumber, 0, lineNumber, lineText.length);
 
 				editBuilder.replace(lineSelection, replacementText);
 			}
@@ -90,7 +70,6 @@ function activate(context) {
 	context.subscriptions.push(disposable);
 }
 
-// This method is called when your extension is deactivated
 function deactivate() {}
 
 module.exports = {
@@ -98,7 +77,6 @@ module.exports = {
 	deactivate,
 };
 
-// Function to count leading characters in a string
 function countLeadingChars(lineText, indentChar) {
 	let count = 0;
 	for (let i = 0; i < lineText.length; i++) {
@@ -111,8 +89,7 @@ function countLeadingChars(lineText, indentChar) {
 	return count;
 }
 
-// Function to get the first word from a string
-function getLineElementInfo(lineText) {
+function getLineElement(lineText) {
 	let lineElement = "";
 	let insideParentheses = false;
 	for (let i = 0; i < lineText.length; i++) {
