@@ -50,20 +50,20 @@ function activate(context) {
 				editBuilder.replace(selection, replacementText);
 			}
 
+			function getSelectionFromIndices(startIndex, endIndex) {
+				const start = new vscode.Position(lineNumber, startIndex);
+				const end = new vscode.Position(lineNumber, endIndex);
+				const newSelection = new vscode.Selection(start, end);
+				return newSelection;
+			}
+
+			function getTextFromIndices(startIndex, endIndex) {
+				const newSelection = getSelectionFromIndices(startIndex, endIndex);
+				const text = editor.document.getText(newSelection);
+				return text;
+			}
+
 			function replaceLine(editBuilder) {
-				function getSelectionFromIndices(startIndex, endIndex) {
-					const start = new vscode.Position(lineNumber, startIndex);
-					const end = new vscode.Position(lineNumber, endIndex);
-					const newSelection = new vscode.Selection(start, end);
-					return newSelection;
-				}
-
-				function getTextFromIndices(startIndex, endIndex) {
-					const newSelection = getSelectionFromIndices(startIndex, endIndex);
-					const text = editor.document.getText(newSelection);
-					return text;
-				}
-
 				const lineElementEndIndex = lineIndentation.length + lineElement.length;
 				const untilLineElementEnd = getTextFromIndices(0, lineElementEndIndex);
 				const shiftedIndentation = indentChar.repeat((indentationLevel + 1) * charsPerLevel);
@@ -73,7 +73,7 @@ function activate(context) {
 				const replacementText = `${untilLineElementEnd}\n${shiftedIndentation}|${fromLineElementEndToSelectionStart}\n${shiftedIndentation}${elementToWrapIn} ${selectedText}\n${shiftedIndentation}| ${fromSelectionEndToLineEnd}`;
 
 				const lineSelection = getSelectionFromIndices(0, replacementText.length);
-				
+
 				editBuilder.replace(lineSelection, replacementText);
 			}
 
