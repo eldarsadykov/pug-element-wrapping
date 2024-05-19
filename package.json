@@ -6,16 +6,22 @@
   "engines": {
     "vscode": "^1.89.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "github.com/eldarsadykov/pug-element-wrapping.git"
+  },
   "categories": [
     "Other"
   ],
   "activationEvents": [],
   "main": "./extension.js",
   "contributes": {
-    "commands": [{
-      "command": "pug-element-wrapping.wrapInPugElement",
-      "title": "Wrap in Pug element"
-    }]
+    "commands": [
+      {
+        "command": "pug-element-wrapping.wrapInPugElement",
+        "title": "Wrap in Pug element"
+      }
+    ]
   },
   "scripts": {
     "lint": "eslint .",
