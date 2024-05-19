@@ -18,31 +18,23 @@ function activate(context) {
 			const lineNumber = selection.start.line;
 			const line = editor.document.lineAt(lineNumber);
 			const lineText = line.text;
-
-			console.log(editor.options.tabSize);
-			console.log(editor.options.insertSpaces);
-
 			const tabSize = editor.options.tabSize;
 			const insertSpaces = editor.options.insertSpaces;
 			const indentChar = insertSpaces ? " " : "\t";
-
 			const leadingCharsCount = countLeadingChars(lineText, indentChar);
 			const charsPerLevel = insertSpaces ? tabSize : 1;
 			const indentationLevel = leadingCharsCount / charsPerLevel;
-
-			console.log(`Line: ${leadingCharsCount} ${insertSpaces ? "spaces" : "tabs"}, level: ${indentationLevel}`);
 			const lineIndentation = indentChar.repeat(indentationLevel * charsPerLevel);
-			const prefix = "\n" + lineIndentation;
-			const postfix = "\n" + lineIndentation + "| ";
 
 			const elementToWrapIn = await vscode.window.showInputBox({
 				prompt: "Enter the element",
 				value: `em`,
 			});
 
-			const replacementText = prefix + elementToWrapIn + " " + selectedText + postfix;
-
 			if (elementToWrapIn !== undefined) {
+				const prefix = "\n" + lineIndentation + elementToWrapIn + " ";
+				const postfix = "\n" + lineIndentation + "| ";
+				const replacementText = prefix + selectedText + postfix;
 				editor.edit((editBuilder) => {
 					editBuilder.replace(selection, replacementText);
 				});
