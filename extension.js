@@ -28,6 +28,8 @@ function activate(context) {
 				return indentChar.repeat(indentationLevel * charsPerLevel);
 			}
 			const lineIndentation = calculateIndentation(indentationLevel);
+			const shiftedIndentation = calculateIndentation(indentationLevel + 1);
+
 			const lineElement = getLineElement(lineText);
 
 			const elementToWrapIn = await vscode.window.showInputBox({
@@ -48,7 +50,7 @@ function activate(context) {
 			function replaceLine(editBuilder) {
 				const lineElementEndIndex = lineIndentation.length + lineElement.length;
 				const untilLineElementEnd = lineText.slice(0, lineElementEndIndex);
-				const shiftedIndentation = calculateIndentation(indentationLevel + 1);
+
 				const fromLineElementEndToSelectionStart = lineText.slice(lineElementEndIndex, selection.start.character);
 				const fromSelectionEndToLineEnd = lineText.slice(selection.end.character);
 
@@ -59,10 +61,20 @@ function activate(context) {
 				editBuilder.replace(lineSelection, replacementText);
 			}
 
+			function setCursor(indentNext) {
+				const modifier = indentNext ? 1 : 0;
+				const newLineNumber = lineNumber + 1 + modifier;
+				const newStartChar = calculateIndentation(indentationLevel + modifier).length + elementToWrapIn.length + 1;
+				const newEndChar = newStartChar + selectedText.length;
+				editor.selection = new vscode.Selection(newLineNumber, newStartChar, newLineNumber, newEndChar);
+			}
+
 			if (lineElement === "|") {
 				editor.edit(replaceSelection);
+				setCursor(false);
 			} else {
 				editor.edit(replaceLine);
+				setCursor(true);
 			}
 		}
 	});
@@ -89,6 +101,11 @@ function countLeadingChars(lineText, indentChar) {
 	return count;
 }
 
+/**
+ * Function to get the first word from a string
+ * @param {string} lineText
+ * @returns {string}
+ */
 function getLineElement(lineText) {
 	let lineElement = "";
 	let insideParentheses = false;
