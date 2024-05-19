@@ -9,66 +9,66 @@ const vscode = require("vscode");
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-  let disposable = vscode.commands.registerCommand("pug-element-wrapping.wrapInPugElement", async function () {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const selection = editor.selection;
-      const selectedText = editor.document.getText(selection);
-      const lineNumber = selection.start.line;
-      const line = editor.document.lineAt(lineNumber);
-      const lineText = line.text;
+	let disposable = vscode.commands.registerCommand("pug-element-wrapping.wrapInPugElement", async function () {
+		const editor = vscode.window.activeTextEditor;
+		if (editor) {
+			const selection = editor.selection;
+			const selectedText = editor.document.getText(selection);
+			const lineNumber = selection.start.line;
+			const line = editor.document.lineAt(lineNumber);
+			const lineText = line.text;
 
-      console.log(editor.options.tabSize);
-      console.log(editor.options.insertSpaces);
+			console.log(editor.options.tabSize);
+			console.log(editor.options.insertSpaces);
 
-      const tabSize = editor.options.tabSize;
-      const insertSpaces = editor.options.insertSpaces;
-      const indentChar = insertSpaces ? " " : "\t";
+			const tabSize = editor.options.tabSize;
+			const insertSpaces = editor.options.insertSpaces;
+			const indentChar = insertSpaces ? " " : "\t";
 
-      const leadingChars = countLeadingChars(lineText, indentChar);
-      const charsPerLevel = insertSpaces ? tabSize : 1;
-      const indentationLevel = leadingChars / charsPerLevel;
+			const leadingChars = countLeadingChars(lineText, indentChar);
+			const charsPerLevel = insertSpaces ? tabSize : 1;
+			const indentationLevel = leadingChars / charsPerLevel;
 
-      console.log(`Line: ${leadingChars} ${insertSpaces ? "spaces" : "tabs"}, level: ${indentationLevel}`);
-      const nextLineIndentation = "\n" + indentChar.repeat(indentationLevel * charsPerLevel);
-      const prefix = nextLineIndentation;
-      const postfix = nextLineIndentation + "| ";
+			console.log(`Line: ${leadingChars} ${insertSpaces ? "spaces" : "tabs"}, level: ${indentationLevel}`);
+			const nextLineIndentation = "\n" + indentChar.repeat(indentationLevel * charsPerLevel);
+			const prefix = nextLineIndentation;
+			const postfix = nextLineIndentation + "| ";
 
-      const elementToWrapIn = await vscode.window.showInputBox({
-        prompt: "Enter the element",
-        value: `em`,
-      });
+			const elementToWrapIn = await vscode.window.showInputBox({
+				prompt: "Enter the element",
+				value: `em`,
+			});
 
-      const replacementText = prefix + elementToWrapIn + " " + selectedText + postfix;
+			const replacementText = prefix + elementToWrapIn + " " + selectedText + postfix;
 
-      if (elementToWrapIn !== undefined) {
-        editor.edit((editBuilder) => {
-          editBuilder.replace(selection, replacementText);
-        });
-      }
-    }
-  });
+			if (elementToWrapIn !== undefined) {
+				editor.edit((editBuilder) => {
+					editBuilder.replace(selection, replacementText);
+				});
+			}
+		}
+	});
 
-  context.subscriptions.push(disposable);
+	context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated
 function deactivate() {}
 
 module.exports = {
-  activate,
-  deactivate,
+	activate,
+	deactivate,
 };
 
 // Function to count leading characters in a string
 function countLeadingChars(line, char) {
-  let count = 0;
-  for (let i = 0; i < line.length; i++) {
-    if (line[i] === char) {
-      count++;
-    } else {
-      break;
-    }
-  }
-  return count;
+	let count = 0;
+	for (let i = 0; i < line.length; i++) {
+		if (line[i] === char) {
+			count++;
+		} else {
+			break;
+		}
+	}
+	return count;
 }
