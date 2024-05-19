@@ -25,7 +25,7 @@ function activate(context) {
 			const charsPerLevel = insertSpaces ? tabSize : 1;
 			const indentationLevel = leadingCharsCount / charsPerLevel;
 			const lineIndentation = indentChar.repeat(indentationLevel * charsPerLevel);
-			const lineElement = getLineElement(lineText);
+			const lineElement = getLineElementInfo(lineText);
 
 			console.log("Line element: " + lineElement);
 
@@ -51,14 +51,30 @@ function activate(context) {
 			}
 
 			function replaceLine(editBuilder) {
-				const start = new vscode.Position(lineNumber, 4);
-				const end = new vscode.Position(lineNumber, 8);
-				const newSelection = new vscode.Selection(start, end);
-				const text = editor.document.getText(newSelection);
-				console.log(text);
-				// lineIndentation + lineElement + "\n" + shiftedIndentation + "| "
-				// const replacementText = "";
-				// editBuilder.replace(lineSelection, replacementText);
+				function getSelectionFromIndices(startIndex, endIndex) {
+					const start = new vscode.Position(lineNumber, startIndex);
+					const end = new vscode.Position(lineNumber, endIndex);
+					const newSelection = new vscode.Selection(start, end);
+					return newSelection;
+				}
+
+				function getTextFromIndices(startIndex, endIndex) {
+					const newSelection = getSelectionFromIndices(startIndex, endIndex);
+					const text = editor.document.getText(newSelection);
+					return text;
+				}
+
+				const lineElementEndIndex = lineIndentation.length + lineElement.length;
+				const untilLineElementEnd = getTextFromIndices(0, lineElementEndIndex);
+				const shiftedIndentation = indentChar.repeat((indentationLevel + 1) * charsPerLevel);
+				const fromLineElementEndToSelectionStart = getTextFromIndices(lineElementEndIndex, selection.start.character);
+				const fromSelectionEndToLineEnd = getTextFromIndices(selection.end.character, line.range.end.character);
+
+				const replacementText = `${untilLineElementEnd}\n${shiftedIndentation}|${fromLineElementEndToSelectionStart}\n${shiftedIndentation}${elementToWrapIn} ${selectedText}\n${shiftedIndentation}| ${fromSelectionEndToLineEnd}`;
+
+				const lineSelection = getSelectionFromIndices(0, replacementText.length);
+				
+				editBuilder.replace(lineSelection, replacementText);
 			}
 
 			if (lineElement === "|") {
@@ -94,7 +110,7 @@ function countLeadingChars(lineText, indentChar) {
 }
 
 // Function to get the first word from a string
-function getLineElement(lineText) {
+function getLineElementInfo(lineText) {
 	let lineElement = "";
 	let insideParentheses = false;
 	for (let i = 0; i < lineText.length; i++) {
